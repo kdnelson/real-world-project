@@ -3,3 +3,7 @@ locals {
   public_subnets  = [for k, az in local.azs : cidrsubnet(var.vpc_cidr, var.subnet_newbits, k)]
   private_subnets = [for k, az in local.azs : cidrsubnet(var.vpc_cidr, var.subnet_newbits, k + 10)]
 }
+
+data "aws_availability_zones" "available" {
+  state = "available"
+}
