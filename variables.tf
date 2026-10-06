@@ -24,3 +24,8 @@ variable "subnet_newbits" {
   type        = number
   default     = 8
 }
+
+variable "bucket_suffix" {
+  type        = string
+  default     = "d51gzn"
+}
