@@ -16,7 +16,6 @@ terraform destroy -auto-approve
 # Or, just run these shell scripts
 # run> & "C:\Program Files\Git\bin\bash.exe" .\create-cluster.sh
 # run> & "C:\Program Files\Git\bin\bash.exe" .\destroy-cluster.sh
-# run> cd pod
 # run> kubectl apply -f .\deployment.yaml
 # run> kubectl get deployment
 # run> kubectl rollout status deployment/catalog
@@ -24,7 +23,7 @@ terraform destroy -auto-approve
 # run> kubectl describe pod <podname-from-get-pods-printout>
 # run> kubectl describe deploy catalog
 # rs = ReplicaSet
-# run> kubectl kubectl get rs
+# run> kubectl get rs
 # Access the pod by port-forwarding
 # run> kubectl port-forward deployment/catalog 7080:8080
 # Goto browser: http://localhost:7080/health -> OK
@@ -35,6 +34,9 @@ terraform destroy -auto-approve
 # run> kubectl get pods -> shows 3 pods
 # Delete entire deployment, versions, and history
 # run> kubectl delete -f .\deployment.yaml
+# run> kubectl apply -f .\cluster-ip.yaml
+# run> kubectl get svc
+# run> kubectl get endpointslices
 
 # Notes:
 #
