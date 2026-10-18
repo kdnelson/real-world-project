@@ -22,7 +22,3 @@ if [ -f "$PROJECT_ROOT/terraform.tfstate" ]; then
     echo "🧹 Cleaning up accidental root state file..."
     rm -f "$PROJECT_ROOT/terraform.tfstate" "$PROJECT_ROOT/terraform.tfstate.backup"
 fi
-
-echo
-echo "✅ Destruction and cleanup completed!"
-echo

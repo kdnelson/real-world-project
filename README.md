@@ -26,10 +26,10 @@ terraform destroy -auto-approve
 # to_configure_kubectl = "aws eks --region us-west-2 update-kubeconfig --name retail-dev-nelson-eks"
 # run> aws eks --region us-west-2 update-kubeconfig --name retail-dev-nelson-eks
 
-# If there are any connection errors to pods, you might need to kill all processes.
+# If there are any connection errors to pods, you might need to kill all processes:
 # run> Stop-Process -Name "kubectl" -Force
 
-# Validate Pod Identity Agent (PIA)
+# To validate Pod Identity Agent (PIA):
 # run> kubectl get daemonset -n kube-system or kubectl get ds -n kube-system
 # run> kubectl get pods -n kube-system
 
@@ -45,9 +45,6 @@ terraform destroy -auto-approve
 # run> kubectl delete pod catalog-pod
 # run> kubectl get sts
 # run> kubectl logs -f deploy/catalog
-
-
-
 
 # run> kubectl get deployment
 # run> kubectl rollout status deployment/catalog

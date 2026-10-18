@@ -16,6 +16,3 @@ echo
 cd "$PROJECT_ROOT/eks"
 terraform init 
 terraform apply -auto-approve
-
-echo "✅ EKS Cluster and VPC creation completed successfully!"
-echo
