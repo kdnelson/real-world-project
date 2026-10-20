@@ -22,17 +22,9 @@ terraform destroy -auto-approve
 # run> winget install Kubernetes.kubectl
 # run> Get-Command kubectl
 
-# From the very end of the eks apply/plan:
+# From the very end of the eks apply/plan (TODO: Can this be automated with destroy too?):
 # to_configure_kubectl = "aws eks --region us-west-2 update-kubeconfig --name retail-dev-nelson-eks"
 # run> aws eks --region us-west-2 update-kubeconfig --name retail-dev-nelson-eks
-
-# If there are any connection errors to pods, you might need to kill all processes:
-# run> Stop-Process -Name "kubectl" -Force
-
-# To validate Pod Identity Agent (PIA):
-# run> kubectl get daemonset -n kube-system or kubectl get ds -n kube-system
-# run> kubectl get pods -n kube-system
-
 # run> kubectl apply -f .\kube-control
 # run> kubectl version
 # run> kubectl get nodes
@@ -45,7 +37,6 @@ terraform destroy -auto-approve
 # run> kubectl delete pod catalog-pod
 # run> kubectl get sts
 # run> kubectl logs -f deploy/catalog
-
 # run> kubectl get deployment
 # run> kubectl rollout status deployment/catalog
 # run> kubectl kubectl get pods
@@ -67,9 +58,18 @@ terraform destroy -auto-approve
 # run> kubectl get svc
 # run> kubectl get endpointslices
 
+# If there are any connection errors to pods, you might need to kill all processes:
+# run> Stop-Process -Name "kubectl" -Force
+
+# To validate Pod Identity Agent (PIA):
+# run> kubectl get daemonset -n kube-system or kubectl get ds -n kube-system
+# run> kubectl get pods -n kube-system
+
 # Notes:
 #
-# TODO:  Find a diagram for all .yaml files and how they communicate
+# TODO: 
+# Find a diagram for all .yaml files and how they communicate
+# Add Add-On Pod Identity from script?
 #
 # Pods are spread accross worker nodes within your EKS cluster
 # You could run multiple containers per pod, but not recommended.  There are some 
