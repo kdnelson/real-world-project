@@ -18,6 +18,7 @@ terraform destroy -auto-approve
 # run> & "C:\Program Files\Git\bin\bash.exe" .\destroy-cluster.sh
 
 # You might need to install:
+#
 # run> choco install eksctl
 # run> winget install Kubernetes.kubectl
 # run> Get-Command kubectl
@@ -25,10 +26,64 @@ terraform destroy -auto-approve
 # From the very end of the eks apply/plan (TODO: Can this be automated with destroy too?):
 # to_configure_kubectl = "aws eks --region us-west-2 update-kubeconfig --name retail-dev-nelson-eks"
 # run> aws eks --region us-west-2 update-kubeconfig --name retail-dev-nelson-eks
-# run> kubectl apply -f .\kube-control
+# run> kubectl apply -f .\kube
 # run> kubectl version
 # run> kubectl get nodes
 # run> kubectl get nodes -o wide
+
+# Install Helm:
+#
+# run> choco install kubernetes-helm
+# run> helm version
+# run> helm repo add secrets-store-csi-driver https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
+# run> helm repo add aws-secrets-manager https://aws.github.io/secrets-store-csi-driver-provider-aws
+# run> helm repo update
+# run> helm repo list
+# run> helm install csi-secrets-store `
+  secrets-store-csi-driver/secrets-store-csi-driver `
+  --namespace kube-system `
+  --set "tokenRequests[0].audience=pods.eks.amazonaws.com"
+# run> helm list --all-namespaces
+# run> helm list -n kube-system
+# run> helm status csi-secrets-store -n kube-system
+# run> kubectl get pods -n kube-system -l app=secrets-store-csi-driver
+# run helm install secrets-provider-aws `
+  aws-secrets-manager/secrets-store-csi-driver-provider-aws `
+  --namespace kube-system `
+  --set "secrets-store-csi-driver.install=false"
+# run> helm list -n kube-system
+# run> helm status secrets-provider-aws -n kube-system
+# run> kubectl get pods -n kube-system -l app=secrets-store-csi-driver
+# run> kubectl get pods -n kube-system -l app=secrets-store-csi-driver-provider-aws
+# run> kubectl get daemonset -n kube-system | Select-String "secrets-store"
+# run> kubectl describe daemonset secrets-provider-aws-secrets-store-csi-driver-provider-aws -n kube-system
+# run> kubectl logs -n kube-system -l app=secrets-store-csi-driver-provider-aws
+# run> kubectl get pods -n kube-system -l "app.kubernetes.io/instance in (csi-secrets-store, secrets-provider-aws)"
+
+# To validate Pod Identity Agent (PIA):
+# run> aws eks create-pod-identity-association --cluster-name $CLUSTER_NAME --namespace default --service-account catalog-mysql-sa --role-arn "arn:aws:iam::824333227939:role/catalog-db-secrets-role" --region $AWS_REGION
+# run> kubectl get daemonset -n kube-system or kubectl get ds -n kube-system
+# run> kubectl get pods -n kube-system
+
+# Create some secrets and daemonset:
+#
+# run> aws secretsmanager put-secret-value --secret-id catalog-db-secret-1 --region $env:AWS_REGION --secret-string '{"MYSQL_USER":"mydbadmin","MYSQL_PASSWORD":"skippy"}'
+# run> $AWS_REGION="us-west-2"  # Replace with your actual region
+aws secretsmanager list-secrets --region $AWS_REGION --query "SecretList[?contains(Name, 'catalog-db-secret-1')].[Name,ARN]" --output table
+# run> aws secretsmanager describe-secret `
+--secret-id catalog-db-secret-1 `
+--region $AWS_REGION
+# run> aws secretsmanager get-secret-value --secret-id catalog-db-secret-1 --region $AWS_REGION --query SecretString --output text
+# run> aws ec2 create-vpc-endpoint --vpc-id vpc-0bd9a85748297baac --vpc-endpoint-type Interface --service-name com.amazonaws.us-west-2.secretsmanager --subnet-ids subnet-058f49d8455463769 subnet-0542c4267fe67d02a subnet-0d76dd2a43b57278b --security-group-ids sg-0a24f18e39d7aac67 --private-dns-enabled
+# run> aws eks create-addon --cluster-name retail-dev-nelson-eks --addon-name eks-pod-identity-agent --region us-west-2
+# run> kubectl get daemonset eks-pod-identity-agent -n kube-system
+
+
+
+
+
+# Extra commands:
+#
 # run> kubectl get namespaces
 # run> kubectl get all -n kube-system
 # run> kubectl get ds -n kube-system
@@ -60,10 +115,6 @@ terraform destroy -auto-approve
 
 # If there are any connection errors to pods, you might need to kill all processes:
 # run> Stop-Process -Name "kubectl" -Force
-
-# To validate Pod Identity Agent (PIA):
-# run> kubectl get daemonset -n kube-system or kubectl get ds -n kube-system
-# run> kubectl get pods -n kube-system
 
 # Notes:
 #
