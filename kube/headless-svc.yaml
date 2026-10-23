@@ -8,10 +8,9 @@ metadata:
     app.kubernetes.io/component: mysql
     app.kubernetes.io/owner: retail-store-sample
 spec:
-  clusterIP: None   # Headless service definition, ie. no cluster IP will be assigned and 
-                    # stable DNS records will be created for each pod in the StatefulSet
+  clusterIP: None   # Headless service definition, ie. no cluster IP will be assigned
   ports:
-    - port: 3306    # Default MySQL port number
+    - port: 3306
       targetPort: mysql
       name: mysql
   selector:

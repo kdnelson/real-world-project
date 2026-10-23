@@ -61,13 +61,16 @@ terraform destroy -auto-approve
 # run> kubectl get pods -n kube-system -l "app.kubernetes.io/instance in (csi-secrets-store, secrets-provider-aws)"
 
 # To validate Pod Identity Agent (PIA):
-# run> aws eks create-pod-identity-association --cluster-name $CLUSTER_NAME --namespace default --service-account catalog-mysql-sa --role-arn "arn:aws:iam::824333227939:role/catalog-db-secrets-role" --region $AWS_REGION
+# run> $AWS_REGION="us-west-2"
+$CLUSTER_NAME="retail-dev-nelson-eks"
+
+aws eks create-pod-identity-association --cluster-name $CLUSTER_NAME --namespace default --service-account catalog-mysql-sa --role-arn "arn:aws:iam::824333227939:role/catalog-db-secrets-role" --region $AWS_REGION
 # run> kubectl get daemonset -n kube-system or kubectl get ds -n kube-system
 # run> kubectl get pods -n kube-system
 
 # Create some secrets and daemonset:
 #
-# run> aws secretsmanager put-secret-value --secret-id catalog-db-secret-1 --region $env:AWS_REGION --secret-string '{"MYSQL_USER":"mydbadmin","MYSQL_PASSWORD":"skippy"}'
+# run> aws secretsmanager put-secret-value --secret-id catalog-db-secret-1 --region $env:AWS_REGION --secret-string '{"MYSQL_USER":"mydbadmin","MYSQL_PASSWORD":"kalyandb101"}'
 # run> $AWS_REGION="us-west-2"  # Replace with your actual region
 aws secretsmanager list-secrets --region $AWS_REGION --query "SecretList[?contains(Name, 'catalog-db-secret-1')].[Name,ARN]" --output table
 # run> aws secretsmanager describe-secret `
@@ -77,6 +80,7 @@ aws secretsmanager list-secrets --region $AWS_REGION --query "SecretList[?contai
 # run> aws ec2 create-vpc-endpoint --vpc-id vpc-0bd9a85748297baac --vpc-endpoint-type Interface --service-name com.amazonaws.us-west-2.secretsmanager --subnet-ids subnet-058f49d8455463769 subnet-0542c4267fe67d02a subnet-0d76dd2a43b57278b --security-group-ids sg-0a24f18e39d7aac67 --private-dns-enabled
 # run> aws eks create-addon --cluster-name retail-dev-nelson-eks --addon-name eks-pod-identity-agent --region us-west-2
 # run> kubectl get daemonset eks-pod-identity-agent -n kube-system
+# run> kubectl get daemonset -n kube-system | sls secrets-store
 
 
 
@@ -115,6 +119,7 @@ aws secretsmanager list-secrets --region $AWS_REGION --query "SecretList[?contai
 
 # If there are any connection errors to pods, you might need to kill all processes:
 # run> Stop-Process -Name "kubectl" -Force
+# run> kubectl rollout restart deployment/catalog
 
 # Notes:
 #

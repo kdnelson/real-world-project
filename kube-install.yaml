@@ -1,0 +1,18 @@
+
+# I might need this before running kubectl apply -f ./kube
+#
+# The Secrets Store CSI driver works like a smart mount agent. It only 
+# contacts AWS Secrets Manager and creates the native catalog-db-secret-sync 
+# object after a pod physically starts mounting its volume.
+# 
+# • The Problem: When you run kubectl apply -f ./kube, Kubernetes reads your deployment.yaml 
+#   and sees secretKeyRef pointing to catalog-db-secret-sync. If that secret doesn't exist yet, 
+#   Kubernetes freezes the deployment with a CreateContainerConfigError before the pod can event
+#   try to mount its volume.
+# • The Result: The volume never mounts, so the driver never connects to AWS, and the secret
+#   never gets created.
+
+kubectl create secret generic catalog-db-secret-sync `
+  --from-literal=MYSQL_USER="mydbadmin" `
+  --from-literal=MYSQL_PASSWORD="kalyandb101" `
+  --dry-run=client -o yaml | kubectl apply -f -
