@@ -1,0 +1,40 @@
+Here is the checklist of the standard IAM roles required for a production-grade EKS architecture. You can use this to keep track of the roles you create as you move through your demo:
+
+1. EKS Cluster IAM Role
+
+• Purpose: Grants the core Kubernetes control plane permission to manage AWS resources (like EC2 instances and Network Interfaces) on your behalf.
+• Trust Principal: ://amazonaws.com
+• Standard Policies Attached: AmazonEKSClusterPolicy
+
+2. EKS Node Group (Worker Nodes) IAM Role
+
+• Purpose: Grants the underlying EC2 instances permission to join the cluster, download container images, and send logs/metrics.
+• Trust Principal: ://amazonaws.com
+• Standard Policies Attached:
+	• AmazonEKSWorkerNodePolicy
+	• AmazonEC2ContainerRegistryReadOnly
+	• AmazonEKS_CNI_Policy (if using standard AWS VPC CNI)
+
+3. Storage Driver Role (EBS / EFS CSI Addon)
+
+• Purpose: Grants pods the ability to provision, attach, and delete AWS EBS storage volumes dynamically.
+• Trust Principal: ://amazonaws.com (using EKS Pod Identity) [1]
+• Standard Policies Attached: AmazonEBSCSIDriverPolicy [1]
+
+4. Networking & Load Balancing Role (AWS Load Balancer Controller)
+
+• Purpose: Grants the Ingress controller pod permission to create, modify, and delete AWS Application Load Balancers (ALBs) and Network Load Balancers (NLBs) when you deploy Kubernetes services.
+• Trust Principal: ://amazonaws.com (using EKS Pod Identity)
+• Standard Policies Attached: A custom IAM policy containing permissions for elasticloadbalancing:* and ec2:*.
+
+5. Cluster Autoscaler or Karpenter Role
+
+• Purpose: Grants the autoscaling pods permission to launch or terminate EC2 instances based on cluster demand.
+• Trust Principal: ://amazonaws.com (using EKS Pod Identity)
+• Standard Policies Attached: A custom policy granting rights to autoscaling:* or specialized EC2 launch permissions (for Karpenter).
+
+6. Application-Specific Roles
+
+• Purpose: Isolated roles for your own workloads (e.g., if a frontend pod needs to write to an S3 bucket or read from a DynamoDB table).
+• Trust Principal: ://amazonaws.com (using EKS Pod Identity)
+• Standard Policies Attached: Custom minimal permissions mapping strictly to what that specific application needs.

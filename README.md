@@ -81,7 +81,12 @@ aws secretsmanager list-secrets --region $AWS_REGION --query "SecretList[?contai
 # run> aws eks create-addon --cluster-name retail-dev-nelson-eks --addon-name eks-pod-identity-agent --region us-west-2
 # run> kubectl get daemonset eks-pod-identity-agent -n kube-system
 # run> kubectl get daemonset -n kube-system | sls secrets-store
-
+# run> kubectl get pods -n kube-system -l "app.kubernetes.io/name=aws-ebs-csi-driver"
+# run> aws eks list-addons --cluster-name ${EKS_CLUSTER_NAME}
+aws eks create-addon `
+--cluster-name ${EKS_CLUSTER_NAME} `
+--addon-name aws-ebs-csi-driver `
+--service-account-role-arn arn:aws:iam::${AWS_ACCOUNT_ID}:role/AmazonEKS_EBS_CSI_DriverRole_${EKS_CLUSTER_NAME}
 
 
 
@@ -123,10 +128,22 @@ aws secretsmanager list-secrets --region $AWS_REGION --query "SecretList[?contai
 
 # Notes:
 #
+Nodes are EC2 machines, and pods are the smallest peice of software that can be installed on them.
+PS C:\Users\krisd\GitHub\real-world-project> kubectl get nodes
+NAME                                       STATUS   ROLES    AGE    VERSION
+ip-10-0-10-87.us-west-2.compute.internal   Ready    <none>   2d3h   v1.37.0-eks-b9510e3
+ip-10-0-11-34.us-west-2.compute.internal   Ready    <none>   2d3h   v1.37.0-eks-b9510e3
+ip-10-0-12-83.us-west-2.compute.internal   Ready    <none>   2d3h   v1.37.0-eks-b9510e3
+PS C:\Users\krisd\GitHub\real-world-project> kubectl get pods -n kube-system -l "app.kubernetes.io/name=aws-ebs-csi-driver"
+NAME                                  READY   STATUS    RESTARTS   AGE
+ebs-csi-controller-7f54d7459d-jfrcp   6/6     Running   0          16m
+ebs-csi-controller-7f54d7459d-lzzv4   6/6     Running   0          16m
+ebs-csi-node-jfgsk                    3/3     Running   0          16m
+ebs-csi-node-qp9r2                    3/3     Running   0          16m
+ebs-csi-node-vkf9z                    3/3     Running   0          16m
+#
 # TODO: 
 # Find a diagram for all .yaml files and how they communicate
-# Add Add-On Pod Identity from script?
-#
 # Pods are spread accross worker nodes within your EKS cluster
 # You could run multiple containers per pod, but not recommended.  There are some 
 # situations when it might be a good idea though.
