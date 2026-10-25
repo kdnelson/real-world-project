@@ -88,6 +88,7 @@ aws eks create-addon `
 --addon-name aws-ebs-csi-driver `
 --service-account-role-arn arn:aws:iam::${AWS_ACCOUNT_ID}:role/AmazonEKS_EBS_CSI_DriverRole_${EKS_CLUSTER_NAME}
 
+# run> kubectl get sc,pvc,pv,pods
 
 
 
