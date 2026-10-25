@@ -90,6 +90,10 @@ aws eks create-addon `
 
 # run> kubectl get sc,pvc,pv,pods
 
+# run> aws eks describe-cluster --name retail-dev-nelson-eks --region us-west-2 --query cluster.resourcesVpcConfig.clusterSecurityGroupId --output text
+>>
+sg-0a24f18e39d7aac67
+
 
 
 # Extra commands:
@@ -143,8 +147,10 @@ ebs-csi-node-jfgsk                    3/3     Running   0          16m
 ebs-csi-node-qp9r2                    3/3     Running   0          16m
 ebs-csi-node-vkf9z                    3/3     Running   0          16m
 #
-# TODO: 
+# TODO:
 # Find a diagram for all .yaml files and how they communicate
+# Create RDS related components using Terraform for RWP.  Then append with snapshot at RWP destroy
+# 
 # Pods are spread accross worker nodes within your EKS cluster
 # You could run multiple containers per pod, but not recommended.  There are some 
 # situations when it might be a good idea though.
