@@ -59,6 +59,7 @@ terraform destroy -auto-approve
 # run> kubectl describe daemonset secrets-provider-aws-secrets-store-csi-driver-provider-aws -n kube-system
 # run> kubectl logs -n kube-system -l app=secrets-store-csi-driver-provider-aws
 # run> kubectl get pods -n kube-system -l "app.kubernetes.io/instance in (csi-secrets-store, secrets-provider-aws)"
+# run> helm list -n kube-system
 
 # To validate Pod Identity Agent (PIA):
 # run> $AWS_REGION="us-west-2"
