@@ -1,3 +1,12 @@
+# Run Ingress project
+# run> kubectl apply -R -f .\k8\
+# run> kubectl get deploy
+# run> kubectl get sts
+# run> kubectl get sa
+# run> kubectl get secrets
+
+
+
 # terraform Commands:
 
 terraform init
@@ -95,8 +104,6 @@ aws eks create-addon `
 >>
 sg-0a24f18e39d7aac67
 
-
-
 # Extra commands:
 #
 # run> kubectl get namespaces
@@ -147,6 +154,12 @@ ebs-csi-controller-7f54d7459d-lzzv4   6/6     Running   0          16m
 ebs-csi-node-jfgsk                    3/3     Running   0          16m
 ebs-csi-node-qp9r2                    3/3     Running   0          16m
 ebs-csi-node-vkf9z                    3/3     Running   0          16m
+#
+# Instance Mode (default)
+# User->ALB->TG->Node Port (NP)->pod
+#
+# IP Mode (More efficient, need to use plugin: AWS VPC CNI)
+# User->ALB->TG->ip of pod->pod
 #
 # TODO:
 # Find a diagram for all .yaml files and how they communicate
