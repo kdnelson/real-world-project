@@ -5,6 +5,8 @@
 # run> kubectl get svc
 # run> kubectl get sa
 # run> kubectl get secrets
+# Clean up and shutdown
+# run> kubectl delete -R -f .\k8\
 
 
 
