@@ -2,6 +2,7 @@
 # run> kubectl apply -R -f .\k8\
 # run> kubectl get deploy
 # run> kubectl get sts
+# run> kubectl get svc
 # run> kubectl get sa
 # run> kubectl get secrets
 
